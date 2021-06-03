@@ -1,0 +1,28 @@
+main {
+  min-height: 80vh;
+}
+a{
+color: black;
+padding: 10px;
+margin:5px;
+/* border: 2px solid black; */
+}
+a:hover{
+  color:black;
+  margin-bottom:2px solid black;
+}
+
+.sidenav {
+  height: 100%;
+  width:50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #eee;
+  transition: 1s ease;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
