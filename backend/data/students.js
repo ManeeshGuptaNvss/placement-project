@@ -1,3 +1,5 @@
+import bcrypt from 'bcryptjs'
+
 const students = [
   {
     roll: 11706038,
@@ -12,7 +14,7 @@ const students = [
     mobile: '7981776225',
     isAdmin: true,
     isScrutinised: true,
-    password: '123456',
+    password: bcrypt.hashSync('123456', 10),
   },
   {
     roll: 11706004,
@@ -27,7 +29,7 @@ const students = [
     mobile: '7981776220',
     isAdmin: false,
     isScrutinised: true,
-    password: '123456',
+    password: bcrypt.hashSync('123456', 10),
   },
   {
     roll: 11706050,
@@ -42,7 +44,7 @@ const students = [
     mobile: '7981776224',
     isAdmin: false,
     isScrutinised: false,
-    password: '123456',
+    password: bcrypt.hashSync('123456', 10),
   },
   {
     roll: 11706022,
@@ -57,7 +59,7 @@ const students = [
     mobile: '7981776226',
     isAdmin: false,
     isScrutinised: true,
-    password: '123456',
+    password: bcrypt.hashSync('123456', 10),
   },
 ]
 // console.log(students.find((p)=>p.roll===11706038))

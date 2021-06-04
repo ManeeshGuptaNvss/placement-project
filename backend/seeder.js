@@ -18,5 +18,20 @@ const importData = async () => {
     process.exit(1)
   }
 }
-
-importData()
+const deleteData = async () => {
+  try {
+    await Student.deleteMany()
+    console.log('Data Deleted!')
+    process.exit()
+  }
+  catch (error) {
+    console.error(error)
+    process.exit(1)
+  }
+}
+if (process.argv[2] === '-d') {
+  deleteData()
+} else {
+  
+  importData()
+}

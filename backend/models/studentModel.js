@@ -36,7 +36,8 @@ const studentSchema = new mongoose.Schema({
         type: Boolean,
     default:false},
     password: {
-        type:String
+        type: String,
+        required:true
     }   
 }, {
     timestamps: true,
@@ -48,6 +49,7 @@ studentSchema.pre('save', async function (next) {
     }
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
+    console.log('Pre middleware')
 })
 
 const Student = mongoose.model('Student', studentSchema)
