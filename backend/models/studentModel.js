@@ -43,6 +43,10 @@ const studentSchema = new mongoose.Schema({
     timestamps: true,
     
 })
+
+studentSchema.methods.matchPassword = async function (enteredPassword) {
+    return await bcrypt.compare(enteredPassword,this.password)
+}
 studentSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next()

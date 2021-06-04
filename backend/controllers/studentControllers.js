@@ -42,6 +42,7 @@ const registerStudent = asyncHandler(async (req, res) => {
   })
   if (student) {
     res.status(201).json({
+      _id:student._id,
       name: student.name,
       roll: student.roll,
       yearOfJoining: student.yearOfJoining,
@@ -62,4 +63,33 @@ const registerStudent = asyncHandler(async (req, res) => {
   }
 })
 
-export { registerStudent }
+// @desc Authenticate Student (Login)
+// @route GET /api/v1/students
+// @access Public
+
+const authStudent = asyncHandler(async(req, res)=> {
+  const { roll, password } = req.body
+  const student = await Student.findOne({ roll })
+  
+  if (student && (await student.matchPassword(password))) {
+    res.json({
+      _id: student._id,
+      name: student.name,
+      roll: student.roll,
+      email: student.email,
+      mobile: student.mobile,
+      isAdmin: student.isAdmin,
+      isScrutinised: student.isScrutinised,
+      token: generateToken(student.roll),
+    })
+  } else if(!student){
+   res.status(401)
+   throw new Error('Invalid roll number')  
+  }
+  else {
+    res.status(401)
+    throw new Error('Incorrect Password')
+  }
+})
+
+export { registerStudent,authStudent }
