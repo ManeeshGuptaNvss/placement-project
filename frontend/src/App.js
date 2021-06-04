@@ -7,16 +7,27 @@ import Header from './components/Header.js'
 import PostsScreen from './screens/PostsScreen'
 import NoticeboardScreen from './screens/NoticeboardScreen'
 import DashboardScreen from './screens/DashboardScreen'
+import TipsScreen from './screens/TipsScreen.js'
+import TeamScreen from './screens/TeamScreen.js'
+import StatisticsScreen from './screens/StatisticsScreen.js'
+import Bread from './components/Bread.js'
 const App = ({ name }) => {
   return (
     <Router>
       <Header />
-     
+      <Bread />
       <main className='py-3'>
         <Container>
           <Route path='/' component={HomeScreen} exact />
           <Route path='/posts' component={PostsScreen} exact />
           <Route path='/noticeboard' component={NoticeboardScreen} exact />
+          <Route path='/dashboard/tips' component={TipsScreen} exact />
+          <Route
+            path='/dashboard/statistics'
+            component={StatisticsScreen}
+            exact
+          />
+          <Route path='/dashboard/team' component={TeamScreen} exact />
           <Route path='/dashboard' component={DashboardScreen} exact />
         </Container>
       </main>

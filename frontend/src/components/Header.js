@@ -1,12 +1,15 @@
 import React from 'react'
 import {LinkContainer} from 'react-router-bootstrap'
-import { Navbar,  Nav, NavDropdown } from 'react-bootstrap'
+import { Navbar,  Nav, NavDropdown, Container } from 'react-bootstrap'
 
 const Header = () => {
   
   return (
     <header>
       <Navbar bg='primary' variant='dark' expand='lg' collapseOnSelect>
+        <Container>
+
+        
         <LinkContainer to='/'>
           <Navbar.Brand>SVUCE Placements</Navbar.Brand>
         </LinkContainer>
@@ -39,6 +42,7 @@ const Header = () => {
             </LinkContainer>
           </Nav>
         </Navbar.Collapse>
+        </Container>
       </Navbar>
     </header>
   )
