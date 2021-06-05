@@ -14,6 +14,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     roll,
     yearOfJoining,
     department,
+    gender,
     cgpa,
     githubHandle,
     tenthMarks,
@@ -30,6 +31,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    gender,
     roll,
     yearOfJoining,
     department,
@@ -42,11 +44,12 @@ const registerStudent = asyncHandler(async (req, res) => {
   })
   if (student) {
     res.status(201).json({
-      _id:student._id,
+      _id: student._id,
       name: student.name,
       roll: student.roll,
       yearOfJoining: student.yearOfJoining,
       cgpa: student.cgpa,
+      gender: student.gender,
       githubHandle: student.githubHandle,
       tenthMarks: student.tenthMarks,
       interMarks: student.interMarks,
@@ -55,7 +58,7 @@ const registerStudent = asyncHandler(async (req, res) => {
       mobile: student.mobile,
       isAdmin: student.isAdmin,
       isScrutinised: student.isScrutinised,
-      token: generateToken(student.roll),
+      token: generateToken(student._id),
     })
   } else {
     res.status(400)
@@ -67,10 +70,10 @@ const registerStudent = asyncHandler(async (req, res) => {
 // @route GET /api/v1/students
 // @access Public
 
-const authStudent = asyncHandler(async(req, res)=> {
+const authStudent = asyncHandler(async (req, res) => {
   const { roll, password } = req.body
   const student = await Student.findOne({ roll })
-  
+
   if (student && (await student.matchPassword(password))) {
     res.json({
       _id: student._id,
@@ -80,16 +83,79 @@ const authStudent = asyncHandler(async(req, res)=> {
       mobile: student.mobile,
       isAdmin: student.isAdmin,
       isScrutinised: student.isScrutinised,
-      token: generateToken(student.roll),
+      token: generateToken(student._id),
     })
-  } else if(!student){
-   res.status(401)
-   throw new Error('Invalid roll number')  
-  }
-  else {
+  } else if (!student) {
+    res.status(401)
+    throw new Error('Invalid roll number')
+  } else {
     res.status(401)
     throw new Error('Incorrect Password')
   }
 })
 
-export { registerStudent,authStudent }
+// @desc Get user profile
+// @route GET /api/v1/students/profile
+// @access Private
+
+const getStudentProfile = asyncHandler(async (req, res) => {
+  const student = await Student.findById(req.student._id)
+
+  if (student) {
+    res.json({
+      _id: student._id,
+      name: student.name,
+      roll: student.roll,
+      email: student.email,
+      mobile: student.mobile,
+      isAdmin: student.isAdmin,
+      isScrutinised: student.isScrutinised,
+    })
+  } else {
+    res.status(401)
+    throw new Error('Student not found')
+  }
+})
+
+
+// @desc Update student Profile
+// @route PUT /api/v1/students/profile
+// @access Private
+const updateStudentProfile = asyncHandler(async (req, res) => {
+  console.log(req.student)
+  const student = await Student.findById(req.student._id)
+
+  if (student) {
+    student.name = req.body.name || student.name
+    student.department = req.body.department || student.department
+    student.email = req.body.email || student.email
+    student.gender = req.body.gender || student.gender
+    student.mobile = req.body.mobile || student.mobile
+    student.githubHandle = req.body.githubHandle || student.githubHandle
+    student.tenthMarks = req.body.tenthMarks || student.tenthMarks
+    student.interMarks = req.body.interMarks || student.interMarks
+    student.diplomaMarks = req.body.diplomaMarks || student.diplomaMarks
+    student.yearOfJoining = req.body.yearOfJoining || student.yearOfJoining
+    student.cgpa = req.body.cgpa || student.cgpa
+    student.roll = req.body.roll || student.roll
+    if (req.body.password) {
+      student.password=req.body.password
+    }
+    const updatedStudent=await student.save()
+    res.json({
+      _id: updatedStudent._id,
+      name: updatedStudent.name,
+      roll: updatedStudent.roll,
+      email: updatedStudent.email,
+      mobile: updatedStudent.mobile,
+      isAdmin: updatedStudent.isAdmin,
+      isScrutinised: updatedStudent.isScrutinised,
+      token:generateToken(updatedStudent._id)
+    })
+  } else {
+    res.status(404)
+    throw new Error('Student not found')
+  }
+})
+
+export { registerStudent, authStudent, getStudentProfile,updateStudentProfile }

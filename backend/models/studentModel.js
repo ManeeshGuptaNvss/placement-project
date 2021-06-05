@@ -29,6 +29,7 @@ const studentSchema = new mongoose.Schema({
         required: [true, 'A student must have email number'],
         
     },
+    gender:String,
     isAdmin: {
         type: Boolean,
     default:false},
