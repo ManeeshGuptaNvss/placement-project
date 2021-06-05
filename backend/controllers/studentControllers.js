@@ -67,7 +67,7 @@ const registerStudent = asyncHandler(async (req, res) => {
 })
 
 // @desc Authenticate Student (Login)
-// @route GET /api/v1/students
+// @route POST /api/v1/students/login
 // @access Public
 
 const authStudent = asyncHandler(async (req, res) => {
@@ -117,7 +117,6 @@ const getStudentProfile = asyncHandler(async (req, res) => {
   }
 })
 
-
 // @desc Update student Profile
 // @route PUT /api/v1/students/profile
 // @access Private
@@ -139,9 +138,9 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
     student.cgpa = req.body.cgpa || student.cgpa
     student.roll = req.body.roll || student.roll
     if (req.body.password) {
-      student.password=req.body.password
+      student.password = req.body.password
     }
-    const updatedStudent=await student.save()
+    const updatedStudent = await student.save()
     res.json({
       _id: updatedStudent._id,
       name: updatedStudent.name,
@@ -150,7 +149,7 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
       mobile: updatedStudent.mobile,
       isAdmin: updatedStudent.isAdmin,
       isScrutinised: updatedStudent.isScrutinised,
-      token:generateToken(updatedStudent._id)
+      token: generateToken(updatedStudent._id),
     })
   } else {
     res.status(404)
@@ -158,4 +157,51 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
   }
 })
 
-export { registerStudent, authStudent, getStudentProfile,updateStudentProfile }
+// @desc Get all students
+// @route GET /api/v1/students
+// @access Private/Admin
+const getStudents = asyncHandler(async (req, res) => {
+  const students = await Student.find({}).select('-password')
+  res.json(students)
+})
+
+// @desc Get all students
+// @route GET /api/v1/students/:id
+// @access Private/Admin
+const getStudentById = asyncHandler(async (req, res) => {
+  const student = await Student.findById(req.params.id).select('-password')
+  if (student) {
+    res.json(student)
+  } else {
+    throw new Error('Student not found')
+  }
+})
+
+// @desc Update student
+// @route PUT /api/v1/students/:id
+// @access Private/Admin
+const updateStudent = asyncHandler(async (req, res) => {
+  const student = await Student.findById(req.params.id).select('-password')
+  if (student) {
+    student.isAdmin = req.body.isAdmin
+    const updatedStudent = await student.save()
+    res.json({
+      name: updatedStudent.name,
+      isAdmin: updatedStudent.isAdmin,
+      roll: updatedStudent.roll,
+    })
+  } else {
+    res.status(404)
+    throw new Error('Student not found')
+  }
+})
+
+export {
+  registerStudent,
+  authStudent,
+  getStudentProfile,
+  updateStudentProfile,
+  getStudents,
+  getStudentById,
+  updateStudent,
+}

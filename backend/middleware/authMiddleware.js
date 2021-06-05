@@ -27,4 +27,12 @@ const protectStudent = asyncHandler(async (req, res, next) => {
   }
 })
 
-export { protectStudent }
+const admin = asyncHandler(async (req, res,next) => {
+  if (req.student && req.student.isAdmin) {
+    next()
+  } else {
+    res.status(401)
+    throw new Error("Not authorized as an admin")
+  }
+})
+export { protectStudent,admin }
