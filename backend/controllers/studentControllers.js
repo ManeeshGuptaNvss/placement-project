@@ -1,6 +1,7 @@
 import Student from './../models/studentModel.js'
 import asyncHandler from 'express-async-handler'
 import generateToken from './../utils/generateToken.js'
+import AppError from '../utils/appError.js'
 
 // @desc Register a new students
 // @route POST /api/v1/students
@@ -11,6 +12,7 @@ const registerStudent = asyncHandler(async (req, res) => {
     name,
     email,
     password,
+    passwordConfirm,
     roll,
     yearOfJoining,
     department,
@@ -22,15 +24,16 @@ const registerStudent = asyncHandler(async (req, res) => {
     diplomaMarks,
     mobile,
   } = req.body
-  const studentExists = await Student.findOne({ roll })
-  if (studentExists) {
-    res.status(400)
-    throw new Error('student already exists')
-  }
+  // const studentExists = await Student.findOne({ roll })
+  // if (studentExists) {
+  //   res.status(400)
+  //   throw new Error('student already exists')
+  // }
   const student = await Student.create({
     name,
     email,
     password,
+    passwordConfirm,
     gender,
     roll,
     yearOfJoining,
@@ -70,28 +73,24 @@ const registerStudent = asyncHandler(async (req, res) => {
 // @route POST /api/v1/students/login
 // @access Public
 
-const authStudent = asyncHandler(async (req, res) => {
-  const { roll, password } = req.body
-  const student = await Student.findOne({ roll })
-
-  if (student && (await student.matchPassword(password))) {
-    res.json({
-      _id: student._id,
-      name: student.name,
-      roll: student.roll,
-      email: student.email,
-      mobile: student.mobile,
-      isAdmin: student.isAdmin,
-      isScrutinised: student.isScrutinised,
-      token: generateToken(student._id),
-    })
-  } else if (!student) {
-    res.status(401)
-    throw new Error('Invalid roll number')
-  } else {
-    res.status(401)
-    throw new Error('Incorrect Password')
+const authStudent = asyncHandler(async (req, res,next) => {
+  const { email, password } = req.body
+  
+  // 1) Check if email and password exists
+  if (!email || !password) {
+    return next(new AppError('Please provide email and password ',400))
   }
+  // 2) Check if user is exits && password is correct
+  const student = await Student.findOne({ email })
+
+  if (!student || !(await student.matchPassword(password))) {
+    return next(new AppError('Incorrect Email or Password ', 401))
+  }
+  // 3) If everything is ok, send token to client
+  res.status(200).json({
+    status:'success login',
+    token: generateToken(student._id),
+  })
 })
 
 // @desc Get user profile
@@ -139,6 +138,7 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
     student.roll = req.body.roll || student.roll
     if (req.body.password) {
       student.password = req.body.password
+      student.passwordConfirm=req.body.passwordConfirm
     }
     const updatedStudent = await student.save()
     res.json({
@@ -146,6 +146,7 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
       name: updatedStudent.name,
       roll: updatedStudent.roll,
       email: updatedStudent.email,
+      password:updatedStudent.password,
       mobile: updatedStudent.mobile,
       isAdmin: updatedStudent.isAdmin,
       isScrutinised: updatedStudent.isScrutinised,

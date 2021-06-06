@@ -8,8 +8,8 @@
     "client": "npm start --prefix frontend",
     "start": "nodemon backend/server.js",
     "dev": "concurrently \"npm run client\" \"npm start\"",
-    "data:import":"node backend/seeder.js",
-    "data:delete":"node backend/seeder.js -d"
+    "data:import": "node backend/seeder.js",
+    "data:delete": "node backend/seeder.js -d"
   },
   "author": "Maneesh Gupta Nvss",
   "license": "ISC",
@@ -21,7 +21,8 @@
     "express-async-handler": "^1.1.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.12",
-    "redux-devtools-extension": "^2.13.9"
+    "redux-devtools-extension": "^2.13.9",
+    "validator": "^13.6.0"
   },
   "devDependencies": {
     "concurrently": "^6.2.0",

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
+import validator from 'validator'
 const studentSchema = new mongoose.Schema(
   {
     name: {
@@ -8,8 +9,7 @@ const studentSchema = new mongoose.Schema(
     },
     roll: {
       type: String,
-      required: [true, 'A student must have roll number'],
-      unique: true,
+      unique: [true, 'A roll should be unique'],
     },
     yearOfJoining: {
       type: String,
@@ -26,7 +26,10 @@ const studentSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, 'A student must have email number'],
+      unique: [true, 'an email should ne unique'],
+      required: [true, 'A student must have email id'],
+      lowercase: [true, 'An email should be completely in lowercase'],
+      validate: [validator.isEmail, 'Please provide a valid email'],
     },
     gender: String,
     isAdmin: {
@@ -39,7 +42,8 @@ const studentSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: [true, 'Please provide a password'],
+      minlength: [6, 'A password should be of min 6 caharacters'],
     },
     passwordConfirm: {
       type: String,
@@ -92,6 +96,13 @@ studentSchema.pre('save', function (next) {
 
   this.passwordChangedAt = Date.now() - 1000
   next()
+})
+studentSchema.post('save', function (error, doc, next) {
+  if (error.name === 'MongoError' && error.code === 11000) {
+    next(new Error('email must be unique (if you are registering as student then roll number should also be unique)'))
+  } else {
+    next(error)
+  }
 })
 
 const Student = mongoose.model('Student', studentSchema)
