@@ -1,17 +1,21 @@
 import express from 'express'
 import rateLimit from 'express-rate-limit'
-
+import helmet from 'helmet'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
+import xss from 'xss-clean'
 import connectDB from './databaseConnection.js'
-
+import mongoSanitize from 'express-mongo-sanitize'
 import studentRoutes from './routes/studentRoutes.js'
 dotenv.config()
 
 connectDB()
-
-// GLOBAL MIDDLEWARES
 const app = express()
+// GLOBAL MIDDLEWARES
+// Set security HTTP headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'))
 }
@@ -23,7 +27,16 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-app.use(express.json())
+// Body parser, reading data from body into req.body
+app.use(express.json({limit:'10kb'}))
+
+
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
+
 
 app.get('/', (req, res) => {
   res.send('API is running..!')
