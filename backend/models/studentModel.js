@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 import validator from 'validator'
 const studentSchema = new mongoose.Schema(
@@ -57,6 +58,8 @@ const studentSchema = new mongoose.Schema(
       },
     },
     passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date
   },
   {
     timestamps: true,
@@ -104,6 +107,30 @@ studentSchema.post('save', function (error, doc, next) {
     next(error)
   }
 })
+studentSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next()
+
+  this.passwordChangedAt = Date.now() - 1000
+  next()
+})
+
+
+
+
+studentSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex')
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+
+  console.log({ resetToken }, this.passwordResetToken)
+
+  this.passwordResetExpires = Date.now() + 100 * 60 * 1000
+
+  return resetToken
+}
 
 const Student = mongoose.model('Student', studentSchema)
 

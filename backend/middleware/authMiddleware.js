@@ -72,7 +72,7 @@ const admin = asyncHandler(async (req, res,next) => {
   if (req.student && req.student.isAdmin) {
     next()
   } else {
-    res.status(401)
+    res.status(403)
     throw new Error("Not authorized as an admin")
   }
 })

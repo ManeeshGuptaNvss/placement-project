@@ -21,6 +21,7 @@
     "express-async-handler": "^1.1.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.12",
+    "nodemailer": "^6.6.1",
     "redux-devtools-extension": "^2.13.9",
     "validator": "^13.6.0"
   },
