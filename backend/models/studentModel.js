@@ -100,6 +100,8 @@ studentSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000
   next()
 })
+
+// This will check whether the uniqueness of the data
 studentSchema.post('save', function (error, doc, next) {
   if (error.name === 'MongoError' && error.code === 11000) {
     next(new Error('email must be unique (if you are registering as student then roll number should also be unique)'))

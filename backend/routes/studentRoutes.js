@@ -1,15 +1,17 @@
 import express from 'express'
 import {
-  authStudent,
-  registerStudent,
   getStudentProfile,
   updateStudentProfile,
   getStudents,
   getStudentById,
   updateStudent,
+} from '../controllers/studentControllers.js'
+import {
   forgotPassword,
   resetPassword,
-} from '../controllers/studentControllers.js'
+  authStudent,
+  registerStudent,
+} from '../controllers/authControllers.js'
 import { protectStudent, admin } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
@@ -25,5 +27,8 @@ router
   .route('/profile')
   .get(protectStudent, getStudentProfile)
   .put(protectStudent, updateStudentProfile)
-router.route('/:id').get(protectStudent, admin, getStudentById).put(protectStudent,admin,updateStudent)
+router
+  .route('/:id')
+  .get(protectStudent, admin, getStudentById)
+  .put(protectStudent, admin, updateStudent)
 export default router
