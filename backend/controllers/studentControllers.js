@@ -6,6 +6,31 @@ import generateToken from './../utils/generateToken.js'
 import AppError from '../utils/appError.js'
 import sendEmail from '../utils/email.js'
 
+
+const createSendToken = (student, statusCode, res) => {
+  const token = generateToken(student._id)
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  }
+  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true
+
+  res.cookie('jwt', token, cookieOptions)
+
+  // Remove password from output
+  student.password = undefined
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    data: {
+      student,
+    },
+  })
+}
+
 // @desc Register a new students
 // @route POST /api/v1/students
 // @access Public
@@ -49,7 +74,10 @@ const registerStudent = asyncHandler(async (req, res) => {
     mobile,
   })
   if (student) {
+    createSendToken(student,201,res)
+    /*
     res.status(201).json({
+      
       _id: student._id,
       name: student.name,
       roll: student.roll,
@@ -65,7 +93,8 @@ const registerStudent = asyncHandler(async (req, res) => {
       isAdmin: student.isAdmin,
       isScrutinised: student.isScrutinised,
       token: generateToken(student._id),
-    })
+    }
+    )*/
   } else {
     res.status(400)
     throw new Error('Invalid student data')
@@ -90,10 +119,11 @@ const authStudent = asyncHandler(async (req, res, next) => {
     return next(new AppError('Incorrect Email or Password ', 401))
   }
   // 3) If everything is ok, send token to client
-  res.status(200).json({
-    status: 'success login',
-    token: generateToken(student._id),
-  })
+  createSendToken(student, 200, res)
+  // res.status(200).json({
+  //   status: 'success login',
+  //   token: generateToken(student._id),
+  // })
 })
 
 // @desc Get user profile
@@ -144,6 +174,8 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
       student.passwordConfirm = req.body.passwordConfirm
     }
     const updatedStudent = await student.save()
+    createSendToken(updatedStudent, 204, res)
+    /*
     res.json({
       _id: updatedStudent._id,
       name: updatedStudent.name,
@@ -154,7 +186,7 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
       isAdmin: updatedStudent.isAdmin,
       isScrutinised: updatedStudent.isScrutinised,
       token: generateToken(updatedStudent._id),
-    })
+    })*/
   } else {
     res.status(404)
     throw new Error('Student not found')
@@ -269,12 +301,13 @@ const resetPassword = asyncHandler(async (req, res, next) => {
 
   // 3) Update changedPasswordAt property for the student
   // 4) Log the student in, send JWT
-  // createSendToken(student, 200, res)
+  createSendToken(student, 200, res)
+  /*
   const token = generateToken(student._id)
   res.status(200).json({
     status: "sucess",
     token
-  })
+  })*/
 })
 
 export {
