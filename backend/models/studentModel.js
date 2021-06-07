@@ -8,43 +8,24 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A name is required'],
     },
-    roll: {
-      type: String,
-      unique: [true, 'A roll should be unique'],
-    },
-    yearOfJoining: {
-      type: String,
-    },
-    department: String,
-    cgpa: String,
-    githubHandle: String,
-    tenthMarks: String,
-    interMarks: String,
-    diplomaMarks: String,
-    mobile: {
-      type: String,
-      required: [true, 'A student must have mobile number'],
-    },
+
     email: {
       type: String,
-      unique: [true, 'an email should ne unique'],
+      unique: true,
       required: [true, 'A student must have email id'],
       lowercase: [true, 'An email should be completely in lowercase'],
       validate: [validator.isEmail, 'Please provide a valid email'],
     },
-    gender: String,
     isAdmin: {
       type: Boolean,
       default: false,
     },
-    isScrutinised: {
-      type: Boolean,
-      default: false,
-    },
+
     password: {
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'A password should be of min 6 caharacters'],
+      select: false,
     },
     passwordConfirm: {
       type: String,
@@ -59,7 +40,7 @@ const studentSchema = new mongoose.Schema(
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
   },
   {
     timestamps: true,
@@ -79,7 +60,7 @@ studentSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false
 }
 studentSchema.methods.matchPassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword,this.password)
+  return await bcrypt.compare(enteredPassword, this.password)
 }
 studentSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
@@ -101,23 +82,21 @@ studentSchema.pre('save', function (next) {
   next()
 })
 
-// This will check whether the uniqueness of the data
-studentSchema.post('save', function (error, doc, next) {
-  if (error.name === 'MongoError' && error.code === 11000) {
-    next(new Error('email must be unique (if you are registering as student then roll number should also be unique)'))
-  } else {
-    next(error)
-  }
-})
+// This will check the uniqueness of the data
+
+// studentSchema.post('save', function (error, doc, next) {
+//   if (error.name === 'MongoError' && error.code === 11000) {
+//     next(new Error('email must be unique'))
+//   } else {
+//     next(error)
+//   }
+// })
 studentSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next()
 
   this.passwordChangedAt = Date.now() - 1000
   next()
 })
-
-
-
 
 studentSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex')

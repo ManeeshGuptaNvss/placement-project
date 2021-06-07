@@ -16,7 +16,7 @@ import { protectStudent, admin } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
-router.route('/').post(registerStudent).get(protectStudent, admin, getStudents)
+router.route('/').get(protectStudent, admin, getStudents)
 
 router.post('/register', registerStudent)
 router.post('/login', authStudent)

@@ -7,6 +7,8 @@ import xss from 'xss-clean'
 import connectDB from './databaseConnection.js'
 import mongoSanitize from 'express-mongo-sanitize'
 import studentRoutes from './routes/studentRoutes.js'
+import postRoutes from './routes/postRoutes.js'
+import applicationRoutes from './routes/applicationRoutes.js'
 dotenv.config()
 
 connectDB()
@@ -41,7 +43,10 @@ app.use(xss());
 app.get('/', (req, res) => {
   res.send('API is running..!')
 })
-app.use('/api/v1/students',studentRoutes)
+
+app.use('/api/v1/students', studentRoutes)
+app.use('/api/v1/posts', postRoutes)
+app.use('/api/v1/applications',applicationRoutes)
 
 
 

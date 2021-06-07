@@ -16,37 +16,13 @@ const registerStudent = expressAsyncHandler(async (req, res) => {
     email,
     password,
     passwordConfirm,
-    roll,
-    yearOfJoining,
-    department,
-    gender,
-    cgpa,
-    githubHandle,
-    tenthMarks,
-    interMarks,
-    diplomaMarks,
-    mobile,
   } = req.body
-  // const studentExists = await Student.findOne({ roll })
-  // if (studentExists) {
-  //   res.status(400)
-  //   throw new Error('student already exists')
-  // }
+ 
   const student = await Student.create({
     name,
     email,
     password,
-    passwordConfirm,
-    gender,
-    roll,
-    yearOfJoining,
-    department,
-    cgpa,
-    githubHandle,
-    tenthMarks,
-    interMarks,
-    diplomaMarks,
-    mobile,
+    passwordConfirm
   })
   if (student) {
     createSendToken(student, 201, res)
