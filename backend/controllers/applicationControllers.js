@@ -7,8 +7,10 @@ import Application from '../models/applicationModel.js'
 // @access Private
 
 const createApplication = asyncHandler(async (req, res) => {
-  // Avoiding user to send multiple applications 
-  const existingApplication = await Application.findOne({ student:  req.student._id  })
+  // Avoiding user to send multiple applications
+  const existingApplication = await Application.findOne({
+    student: req.student._id,
+  })
   // console.log(req.student,existingApplication)
   if (existingApplication) {
     throw new AppError('User already submitted an Application', 400)
@@ -39,7 +41,7 @@ const createApplication = asyncHandler(async (req, res) => {
     mobile,
     resume,
     student: req.student._id,
-    email:req.student.email,
+    email: req.student.email,
   })
   if (application) {
     res.status(201).json({
@@ -96,13 +98,12 @@ const editApplication = asyncHandler(async (req, res) => {
 // @access Private
 
 const validateApplication = asyncHandler(async (req, res) => {
-  
   const application = await Application.findById(req.params.id)
-  application.isValidated = req.body.isValidated
+  application.isValidated = req.body.isValidated || application.isValidated
   const updatedApplication = await application.save()
   res.json({
     message: 'Validated successfully',
-    updatedApplication
+    updatedApplication,
   })
 })
 // @desc Validate Application
@@ -110,16 +111,33 @@ const validateApplication = asyncHandler(async (req, res) => {
 // @access Private
 
 const selectApplication = asyncHandler(async (req, res) => {
-  
   const application = await Application.findById(req.params.id)
-  
+
   application.isSelected = req.body.isSelected
-  application.selectedFor=req.body.selectedFor
+  application.selectedFor = req.body.selectedFor
   const updatedApplication = await application.save()
   res.json({
     message: 'success',
-    updatedApplication
+    updatedApplication,
   })
 })
 
-export { getApplications, createApplication, editApplication,validateApplication,selectApplication }
+// @desc Reports of selected students
+// @route GET api/v1/applications/reports
+// @access Public
+const getReports = asyncHandler(async (req, res) => {
+  const applications = await Application.find({ isSelected: true }).populate(
+    'student'
+  )
+  if (applications) {
+    res.json(applications)
+  }
+})
+export {
+  getApplications,
+  createApplication,
+  editApplication,
+  validateApplication,
+  selectApplication,
+  getReports,
+}

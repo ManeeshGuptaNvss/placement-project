@@ -7,13 +7,15 @@ const studentSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'A name is required'],
+      unique:true
     },
     email: {
       type: String,
-      unique: true,
+
       required: [true, 'A student must have email id'],
       lowercase: [true, 'An email should be completely in lowercase'],
       validate: [validator.isEmail, 'Please provide a valid email'],
+      unique: true
     },
     isAdmin: {
       type: Boolean,
@@ -24,7 +26,7 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a password'],
       minlength: [6, 'A password should be of min 6 caharacters'],
-      select: false,
+      
     },
     passwordConfirm: {
       type: String,

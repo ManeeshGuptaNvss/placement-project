@@ -5,24 +5,25 @@ import sendEmail from '../utils/email.js'
 import crypto from 'crypto'
 import { createSendToken } from '../utils/generateToken.js'
 
-
 // @desc Register a new students
 // @route POST /api/v1/students
 // @access Public
 
 const registerStudent = expressAsyncHandler(async (req, res) => {
-  const {
-    name,
+  // 1) Avoiding multiple users with the same email
+  const { name, email, password, passwordConfirm } = req.body
+  const existingStudent = await Student.findOne({
     email,
-    password,
-    passwordConfirm,
-  } = req.body
- 
+  })
+  if (existingStudent) {
+    throw new AppError('User with this email already exists ', 400)
+  }
+  // 2)Creating a new user
   const student = await Student.create({
     name,
     email,
     password,
-    passwordConfirm
+    passwordConfirm,
   })
   if (student) {
     createSendToken(student, 201, res)
@@ -130,4 +131,4 @@ const resetPassword = expressAsyncHandler(async (req, res, next) => {
   })*/
 })
 
-export { forgotPassword, resetPassword,registerStudent,authStudent }
+export { forgotPassword, resetPassword, registerStudent, authStudent }
