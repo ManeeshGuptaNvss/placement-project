@@ -7,11 +7,12 @@ import Application from '../models/applicationModel.js'
 // @access Private
 
 const createApplication = asyncHandler(async (req, res) => {
-  // const existingApplication = await Application.find({ student:  req.student._id  })
+  // Avoiding user to send multiple applications 
+  const existingApplication = await Application.findOne({ student:  req.student._id  })
   // console.log(req.student,existingApplication)
-  // if (existingApplication) {
-  //   new AppError('User already submitted an Application', 400)
-  // }
+  if (existingApplication) {
+    throw new AppError('User already submitted an Application', 400)
+  }
   const {
     roll,
     yearOfJoining,
@@ -38,7 +39,7 @@ const createApplication = asyncHandler(async (req, res) => {
     mobile,
     resume,
     student: req.student._id,
-    email: req.student.email,
+    email:req.student.email,
   })
   if (application) {
     res.status(201).json({
@@ -46,7 +47,7 @@ const createApplication = asyncHandler(async (req, res) => {
       data: application,
     })
   } else {
-    res.json(400)
+    res.status(400)
     throw new Error('Invalid application data')
   }
 })
@@ -95,12 +96,13 @@ const editApplication = asyncHandler(async (req, res) => {
 // @access Private
 
 const validateApplication = asyncHandler(async (req, res) => {
+  
   const application = await Application.findById(req.params.id)
   application.isValidated = req.body.isValidated
   const updatedApplication = await application.save()
   res.json({
     message: 'Validated successfully',
-    updatedApplication,
+    updatedApplication
   })
 })
 // @desc Validate Application
@@ -108,21 +110,16 @@ const validateApplication = asyncHandler(async (req, res) => {
 // @access Private
 
 const selectApplication = asyncHandler(async (req, res) => {
+  
   const application = await Application.findById(req.params.id)
-
+  
   application.isSelected = req.body.isSelected
-  application.selectedFor = req.body.selectedFor
+  application.selectedFor=req.body.selectedFor
   const updatedApplication = await application.save()
   res.json({
     message: 'success',
-    updatedApplication,
+    updatedApplication
   })
 })
 
-export {
-  getApplications,
-  createApplication,
-  editApplication,
-  validateApplication,
-  selectApplication,
-}
+export { getApplications, createApplication, editApplication,validateApplication,selectApplication }
