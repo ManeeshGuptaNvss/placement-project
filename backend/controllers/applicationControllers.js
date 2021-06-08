@@ -95,7 +95,7 @@ const editApplication = asyncHandler(async (req, res) => {
 })
 // @desc Validate Application
 // @route PUT api/v1/applications/:id/validate
-// @access Private
+// @access Private(admin)
 
 const validateApplication = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id)
@@ -107,9 +107,28 @@ const validateApplication = asyncHandler(async (req, res) => {
   })
 })
 // @desc Validate Application
-// @route PUT api/v1/applications/:id/select
-// @access Private
+// @route PUT api/v1/applications/filter?querystring
+// @access Private(admin)
+const filterApplications = asyncHandler(async (req, res) => {
+  const queryObj = { ...req.query }
+  const excludedFields = ['page', 'sort', 'limit', 'fields']
+  excludedFields.forEach(el => delete queryObj[el])
+  
+  let queryStr = JSON.stringify(queryObj)
+  queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+  console.log(req.query, JSON.parse(queryStr))
+  const query = Application.find(JSON.parse(queryStr))
+  const filteredApplications = await query
+  res.json({
+    message: "success",
+    count:filteredApplications.length,
+    filteredApplications
+  })
+})
 
+// @desc Validate Application
+// @route PUT api/v1/applications/:id/select
+// @access Private(admin)
 const selectApplication = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id)
 
@@ -140,4 +159,5 @@ export {
   validateApplication,
   selectApplication,
   getReports,
+  filterApplications
 }

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import validator from 'validator'
 const applicationSchema = new mongoose.Schema(
   {
     roll: {
@@ -10,7 +9,6 @@ const applicationSchema = new mongoose.Schema(
     mobile: {
       type: String,
       required: [true, 'A student must have mobile number'],
-      unique: true,
     },
     yearOfJoining: {
       type: String,
@@ -20,22 +18,22 @@ const applicationSchema = new mongoose.Schema(
       require: [true, 'Please provide a valid department'],
     },
     cgpa: {
-      type: String,
+      type: Number,
       required: [true, 'Please add a valid cgpa'],
     },
     githubHandle: {
       type: String,
     },
     tenthMarks: {
-      type: String,
+      type: Number,
       required: [true, 'Please provide valid tenthMarks'],
     },
     interMarks: {
-      type: String,
+      type: Number,
       //   required: [true, 'Please add a valid interMarks'],
     },
     diplomaMarks: {
-      type: String,
+      type: Number,
       //   required: [true, 'Please add a valid dilpomaMarks'],
     },
     resume: {
@@ -48,10 +46,6 @@ const applicationSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      unique: true,
-      required: [true, 'A student must have email id'],
-      lowercase: [true, 'An email should be completely in lowercase'],
-      validate: [validator.isEmail, 'Please provide a valid email'],
     },
     isSelected: {
       type: Boolean,
