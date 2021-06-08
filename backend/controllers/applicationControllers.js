@@ -64,6 +64,7 @@ const getApplications = asyncHandler(async (req, res) => {
   if (applications) {
     res.json({
       message: 'success',
+      count:applications.length,
       data: applications,
     })
   }

@@ -2,12 +2,12 @@ import mongoose from 'mongoose'
 const applicationSchema = new mongoose.Schema(
   {
     roll: {
-      type: String,
+      type: Number,
       unique: true,
     },
     gender: String,
     mobile: {
-      type: String,
+      type: Number,
       required: [true, 'A student must have mobile number'],
     },
     yearOfJoining: {
