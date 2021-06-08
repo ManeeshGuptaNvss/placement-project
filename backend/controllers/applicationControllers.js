@@ -1,6 +1,7 @@
 import AppError from '../utils/appError.js'
 import asyncHandler from 'express-async-handler'
 import Application from '../models/applicationModel.js'
+import APIFeatures from '../utils/apiFeatures.js'
 
 // @desc Create Application
 // @route POST api/v1/applications
@@ -110,6 +111,7 @@ const validateApplication = asyncHandler(async (req, res) => {
 // @route PUT api/v1/applications/filter?querystring
 // @access Private(admin)
 const filterApplications = asyncHandler(async (req, res) => {
+  /*
   const queryObj = { ...req.query }
   const excludedFields = ['page', 'sort', 'limit', 'fields']
   excludedFields.forEach(el => delete queryObj[el])
@@ -119,10 +121,17 @@ const filterApplications = asyncHandler(async (req, res) => {
   console.log(req.query, JSON.parse(queryStr))
   const query = Application.find(JSON.parse(queryStr))
   const filteredApplications = await query
+  */
+  const features = new APIFeatures(Application.find(), req.query)
+    .filter()
+    .sort()
+    .paginate()
+    .limitFields()
+  const filteredApplications=await features.query
   res.json({
-    message: "success",
-    count:filteredApplications.length,
-    filteredApplications
+    message: 'success',
+    count: filteredApplications.length,
+    filteredApplications,
   })
 })
 
@@ -159,5 +168,5 @@ export {
   validateApplication,
   selectApplication,
   getReports,
-  filterApplications
+  filterApplications,
 }
