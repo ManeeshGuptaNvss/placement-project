@@ -1,13 +1,42 @@
 import AppError from '../utils/appError.js'
+import multer from 'multer'
 import asyncHandler from 'express-async-handler'
 import Application from '../models/applicationModel.js'
 import APIFeatures from '../utils/apiFeatures.js'
+
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null,'backend/uploads')
+  },
+  filename: (req, file, cb) => {
+    const ext = file.mimetype.split('/')[1];
+    const name = file.originalname.split('.')[0]
+    cb(null,`resume-${name}-${Date.now()}.${ext}`)
+  }
+})
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.split('/')[1] === 'pdf') {
+    cb(null,true)
+  } else {
+    cb(new AppError('not a valid document!',400),false)
+  }
+}
+const upload = multer({
+  storage: multerStorage,
+fileFilter:multerFilter})
+
+
+const uploadResume=upload.single('resume')
 
 // @desc Create Application
 // @route POST api/v1/applications
 // @access Private
 
 const createApplication = asyncHandler(async (req, res) => {
+  console.log(req.file)
+  console.log(req.body)
+  
   // Avoiding user to send multiple applications
   const existingApplication = await Application.findOne({
     student: req.student._id,
@@ -27,7 +56,7 @@ const createApplication = asyncHandler(async (req, res) => {
     interMarks,
     diplomaMarks,
     mobile,
-    resume,
+    
   } = req.body
   const application = await Application.create({
     roll,
@@ -40,7 +69,7 @@ const createApplication = asyncHandler(async (req, res) => {
     interMarks,
     diplomaMarks,
     mobile,
-    resume,
+    resume:req.file.path,
     student: req.student._id,
     email: req.student.email,
   })
@@ -64,7 +93,7 @@ const getApplications = asyncHandler(async (req, res) => {
   if (applications) {
     res.json({
       message: 'success',
-      count:applications.length,
+      count: applications.length,
       data: applications,
     })
   }
@@ -74,6 +103,9 @@ const getApplications = asyncHandler(async (req, res) => {
 // @route PUT api/v1/applications/:id
 // @access Private
 const editApplication = asyncHandler(async (req, res) => {
+  console.log(req.file)
+  console.log(req.body)
+
   const application = await Application.findById(req.params.id)
   application.roll = req.body.roll || application.roll
   application.yearOfJoining =
@@ -86,7 +118,7 @@ const editApplication = asyncHandler(async (req, res) => {
   application.interMarks = req.body.interMarks || application.interMarks
   application.diplomaMarks = req.body.diplomaMarks || application.diplomaMarks
   application.mobile = req.body.mobile || application.mobile
-  application.resume = req.body.resume || application.resume
+  application.resume = req.file.path || application.resume
 
   const updatedApplication = await application.save()
   res.json({
@@ -128,7 +160,7 @@ const filterApplications = asyncHandler(async (req, res) => {
     .sort()
     .paginate()
     .limitFields()
-  const filteredApplications=await features.query
+  const filteredApplications = await features.query
   res.json({
     message: 'success',
     count: filteredApplications.length,
@@ -150,7 +182,46 @@ const selectApplication = asyncHandler(async (req, res) => {
     updatedApplication,
   })
 })
+// @desc Reports of selected students
+// @route GET api/v1/applications/stats/:year
+// @access Public
+const getYearlyStats = asyncHandler(async (req, res) => {
+  const year = req.params.year * 1
+  const stats = await Application.aggregate([
+    {
+      $match: {
+        createdAt: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
+        },
+      },
+    },
+    {
+      $group: {
+        _id:'$isSelected',
+        numOfApplications:{$sum:1}
+      }
+    },
+    // {
+    //   $match: {
+    //     isSelected:{$ne:false}
+    //   }
+    // },
+    // {
+    //   $group: {
+    //     _id: '',
 
+    //     numOfPlaced: {$sum:1},
+    //   },
+    // },
+  ])
+  res.status(200).json({
+    status: 'success',
+    data: {
+      stats
+    }
+  })
+})
 // @desc Reports of selected students
 // @route GET api/v1/applications/reports
 // @access Public
@@ -170,4 +241,6 @@ export {
   selectApplication,
   getReports,
   filterApplications,
+  getYearlyStats,
+  uploadResume
 }
