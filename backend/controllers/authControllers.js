@@ -3,7 +3,7 @@ import Student from '../models/studentModel.js'
 import AppError from '../utils/appError.js'
 import sendEmail from '../utils/email.js'
 import crypto from 'crypto'
-import { createSendToken } from '../utils/generateToken.js'
+import { createSendToken, generateToken } from '../utils/generateToken.js'
 
 // @desc Register a new students
 // @route POST /api/v1/students
@@ -51,7 +51,14 @@ const authStudent = expressAsyncHandler(async (req, res, next) => {
     return next(new AppError('Incorrect Email or Password ', 401))
   }
   // 3) If everything is ok, send token to client
-  createSendToken(student, 200, res)
+  // createSendToken(student, 200, res)
+  res.status(200).json({
+    _id:student._id,
+    name: student.name,
+    token: generateToken(student._id),
+    email: student.email,
+    isAdmin:student.isAdmin
+  })
 })
 
 // @desc Forgot Password

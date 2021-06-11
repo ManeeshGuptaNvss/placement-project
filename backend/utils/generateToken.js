@@ -22,10 +22,13 @@ const createSendToken = (student, statusCode, res) => {
 
   res.status(statusCode).json({
     status: 'success',
-    token,
+
     data: {
       student,
+      token,
     },
+    // token,
+    // ...student
   })
 }
 

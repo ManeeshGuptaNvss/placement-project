@@ -9,6 +9,7 @@ import mongoSanitize from 'express-mongo-sanitize'
 import studentRoutes from './routes/studentRoutes.js'
 import postRoutes from './routes/postRoutes.js'
 import applicationRoutes from './routes/applicationRoutes.js'
+import { errorHandler, notFound } from './middleware/errorMiddleware.js'
 dotenv.config()
 
 connectDB()
@@ -48,7 +49,8 @@ app.use('/api/v1/students', studentRoutes)
 app.use('/api/v1/posts', postRoutes)
 app.use('/api/v1/applications',applicationRoutes)
 
-
+app.use(notFound)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} mode on port number ${PORT} `))

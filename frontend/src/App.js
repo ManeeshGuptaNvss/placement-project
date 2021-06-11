@@ -10,15 +10,20 @@ import DashboardScreen from './screens/DashboardScreen'
 import TipsScreen from './screens/TipsScreen.js'
 import TeamScreen from './screens/TeamScreen.js'
 import StatisticsScreen from './screens/StatisticsScreen.js'
-import Bread from './components/Bread.js'
+import LoginScreen from './screens/LoginScreen.js'
+import RegisterScreen from './screens/RegisterScreen.js'
+// import Bread from './components/Bread.js'
 const App = ({ name }) => {
   return (
     <Router>
       <Header />
-      <Bread />
-      <main className='py-3'>
+      {/* <Bread /> */}
+      <main className='py-3'style={{backgroundColor:'#ECF0F1'}}>
         <Container>
           <Route path='/' component={HomeScreen} exact />
+          <Route path='/login' component={LoginScreen}  />
+          <Route path='/register' component={RegisterScreen} exact />
+
           <Route path='/posts' component={PostsScreen} exact />
           <Route path='/noticeboard' component={NoticeboardScreen} exact />
           <Route path='/dashboard/tips' component={TipsScreen} exact />
