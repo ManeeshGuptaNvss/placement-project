@@ -6,7 +6,7 @@ import crypto from 'crypto'
 import { createSendToken, generateToken } from '../utils/generateToken.js'
 
 // @desc Register a new students
-// @route POST /api/v1/students
+// @route POST /api/v1/students/register
 // @access Public
 
 const registerStudent = expressAsyncHandler(async (req, res) => {
@@ -26,7 +26,14 @@ const registerStudent = expressAsyncHandler(async (req, res) => {
     passwordConfirm,
   })
   if (student) {
-    createSendToken(student, 201, res)
+    res.status(201).json({
+      token: generateToken(student._id),
+      name: student.name,
+      _id: student._id,
+      isAdmin: student.isAdmin,
+      email:student.email
+    })
+    // createSendToken(student, 201, res)
   } else {
     res.status(400)
     throw new Error('Invalid student data')

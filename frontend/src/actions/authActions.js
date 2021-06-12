@@ -52,7 +52,7 @@ export const register = (name, email, password, passwordConfirm) => async (dispa
       },
     }
     const { data } = await axios.post(
-      '/api/students',
+      '/api/v1/students/register',
       { name, email, password,passwordConfirm },
       config
     )

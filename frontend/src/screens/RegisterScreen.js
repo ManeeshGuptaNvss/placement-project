@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Form, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
-import{useSelector} from 'react-redux'
+import{useSelector,useDispatch} from 'react-redux'
 import {register} from '../actions/authActions.js'
 import FormContainer from '../components/FormContainer.js'
 import Message from '../components/Message.js'
-import { dispatch } from 'rxjs/internal/observable/range'
+
 import Loader from '../components/Loader.js'
+
+
 const RegisterScreen = ({ location, history }) => {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
+  const dispatch=useDispatch()
   const redirect = location.search ? location.search.split('=')[1] : '/'
   const userRegister = useSelector((state) => state.userRegister)
   const{loading,error,userInfo}=userRegister

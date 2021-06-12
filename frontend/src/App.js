@@ -4,6 +4,7 @@ import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Footer from './components/Footer.js'
 import Header from './components/Header.js'
+import Navbar from './components/Navbar.js'
 import PostsScreen from './screens/PostsScreen'
 import NoticeboardScreen from './screens/NoticeboardScreen'
 import DashboardScreen from './screens/DashboardScreen'
@@ -16,9 +17,9 @@ import RegisterScreen from './screens/RegisterScreen.js'
 const App = ({ name }) => {
   return (
     <Router>
-      <Header />
+      <Navbar />
       {/* <Bread /> */}
-      <main className='py-3'style={{backgroundColor:'#ECF0F1'}}>
+      <main >
         <Container>
           <Route path='/' component={HomeScreen} exact />
           <Route path='/login' component={LoginScreen}  />
