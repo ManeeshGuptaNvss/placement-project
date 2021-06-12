@@ -60,7 +60,7 @@ const SideNav = (props) => {
           </ul>
         ) : null}
         <li onClick={props.click}>
-          <NavLink to='/appliation' exact className='activeclass'>
+          <NavLink to='/application' exact className='activeclass'>
             Application
           </NavLink>
         </li>

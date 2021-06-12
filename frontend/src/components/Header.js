@@ -24,7 +24,7 @@ const Header = () => {
           </LinkContainer>
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
-            <Nav className='ml-auto'>
+            <Nav className='mr-auto'>
               <LinkContainer to='/posts'>
                 <Nav.Link>Posts</Nav.Link>
               </LinkContainer>

@@ -3,6 +3,8 @@ import HomeScreen from './screens/HomeScreen.js'
 import { Container } from 'react-bootstrap'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Footer from './components/Footer.js'
+import Header from './components/Header.js'
+import ProfileScreen from './screens/ProfileScreen.js'
 import Navbar from './components/Navbar.js'
 import PostsScreen from './screens/PostsScreen'
 import NoticeboardScreen from './screens/NoticeboardScreen'
@@ -16,14 +18,14 @@ import RegisterScreen from './screens/RegisterScreen.js'
 const App = ({ name }) => {
   return (
     <Router>
-      <Navbar />
+      <Header />
       {/* <Bread /> */}
       <main >
         <Container>
           <Route path='/' component={HomeScreen} exact />
           <Route path='/login' component={LoginScreen}  />
+          <Route path='/profile' component={ProfileScreen}  />
           <Route path='/register' component={RegisterScreen} exact />
-
           <Route path='/posts' component={PostsScreen} exact />
           <Route path='/noticeboard' component={NoticeboardScreen} exact />
           <Route path='/dashboard/tips' component={TipsScreen} exact />

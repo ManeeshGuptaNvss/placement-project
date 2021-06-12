@@ -1,37 +1,65 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Button, Form } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
-import { register } from '../actions/authActions.js'
 import FormContainer from '../components/FormContainer.js'
 import Message from '../components/Message.js'
 
 import Loader from '../components/Loader.js'
+import {
+  getStudentDetails,
+  updateStudentDetails,
+} from '../actions/studentActions.js'
 
-const RegisterScreen = ({ location, history }) => {
+const ProfileScreen = ({ location, history }) => {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+
   const [password, setPassword] = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
   const dispatch = useDispatch()
-  const redirect = location.search ? location.search.split('=')[1] : '/'
-  const userRegister = useSelector((state) => state.userRegister)
-  const { loading, error, userInfo } = userRegister
+
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
+  const studentDetails = useSelector((state) => state.studentDetails)
+  const { loading, error, user } = studentDetails
+
+  const studentDetailsUpdate = useSelector(
+    (state) => state.studentDetailsUpdate
+  )
+  const { success, error: errorUpdate } = studentDetailsUpdate
   useEffect(() => {
-    if (userInfo) {
-      history.push(redirect)
+    if (!userInfo) {
+      history.push('/login')
+    } else {
+      if (!user.name) {
+        // this 'profile' is reflected as id in userActions
+        dispatch(getStudentDetails('profile'))
+      } else {
+        setName(user.name)
+        setEmail(user.email)
+      }
     }
-  }, [history, redirect, userInfo])
+  }, [history, user, userInfo, dispatch])
   const submitHandler = (e) => {
     e.preventDefault()
     // DISPATCH REGISTER
-    dispatch(register(name, email, password, passwordConfirm))
+    dispatch(
+      updateStudentDetails({
+        id: user._id,
+        name,
+        email,
+        password,
+        passwordConfirm,
+      })
+    )
   }
   return (
     <FormContainer>
-      <h1>Register </h1>
+      <h1>Edit Profile </h1>
       {error && <Message variant='danger'>{error}</Message>}
-
+      {error && <Message variant='danger'>{errorUpdate}</Message>}
+      {success && <Message variant='success'>{'Profile updated!'}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
         <Form.Group controlId='name'>
@@ -42,7 +70,6 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Enter Name'
             onChange={(e) => setName(e.target.value)}
           />
-          <Form.Text className='text-muted'>Enter your full name</Form.Text>
         </Form.Group>
         <Form.Group controlId='email'>
           <Form.Label>Email Address</Form.Label>
@@ -52,9 +79,6 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Enter email'
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Form.Text className='text-muted'>
-            We'll never share your email with anyone else.
-          </Form.Text>
         </Form.Group>
 
         <Form.Group controlId='password'>
@@ -65,9 +89,6 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Password'
             onChange={(e) => setPassword(e.target.value)}
           />
-          <Form.Text className='text-muted'>
-            A min of 6 characters is needed
-          </Form.Text>
         </Form.Group>
         <Form.Group controlId='passwordConfirm'>
           <Form.Label>Confirm Password</Form.Label>
@@ -77,25 +98,14 @@ const RegisterScreen = ({ location, history }) => {
             placeholder='Confirm Password'
             onChange={(e) => setPasswordConfirm(e.target.value)}
           />
-          <Form.Text className='text-muted'>
-            This should match your password
-          </Form.Text>
         </Form.Group>
 
         <Button variant='primary' type='submit'>
-          Register
+          Update
         </Button>
       </Form>
-      <Row>
-        <Col>
-          Already Exists?{' '}
-          <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-            Login
-          </Link>
-        </Col>
-      </Row>
     </FormContainer>
   )
 }
 
-export default RegisterScreen
+export default ProfileScreen

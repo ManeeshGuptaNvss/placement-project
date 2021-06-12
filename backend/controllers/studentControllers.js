@@ -11,7 +11,12 @@ const getStudentProfile = asyncHandler(async (req, res) => {
   const student = await Student.findById(req.student._id)
 
   if (student) {
-    res.json(student)
+    res.json({
+      _id: student._id,
+      name: student.name,
+      email: student.email,
+      isAdmin: student.isAdmin,
+    })
   } else {
     res.status(401)
     throw new Error('Student not found')
@@ -32,7 +37,14 @@ const updateStudentProfile = asyncHandler(async (req, res) => {
       student.passwordConfirm = req.body.passwordConfirm
     }
     const updatedStudent = await student.save()
-    createSendToken(updatedStudent, 204, res)
+    // createSendToken(updatedStudent, 204, res)
+    res.status(204).json({
+      _id: updatedStudent._id,
+      name: updatedStudent.name,
+      email: updatedStudent.email,
+      isAdmin: updatedStudent.isAdmin,
+      token: generateToken(updatedStudent._id),
+    })
   } else {
     res.status(404)
     throw new Error('Student not found')
