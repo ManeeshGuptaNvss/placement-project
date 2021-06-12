@@ -1,6 +1,6 @@
 import React from 'react';
 import Toolbar from './Toolbar'
-import SideDrawer from './SideDrawer';
+import SideDrawer from './SideNav';
 import Backdrop from "./Backdrop";
 
 class Navbar extends React.Component{

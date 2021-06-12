@@ -33,13 +33,18 @@ class SideDrawer extends React.Component {
           </span>
         </div>
         <ul>
-          <li onClick={this.props.click}>
+          {/* <li onClick={this.props.click}>
             <NavLink to='/about-us' exact className='activeclass'>
               About Us
             </NavLink>
+          </li> */}
+          <li onClick={this.props.click}>
+            <NavLink to='/login' exact className='activeclass'>
+              Login/Register
+            </NavLink>
           </li>
           <li className='activeclass' onClick={this.handleDropDownAcademics}>
-            Academics <i className='fa fa-caret-down' />
+            Placements <i className='fa fa-caret-down' />
           </li>
           {this.state.showDropDownAcademics ? (
             <ul className='drp-down'>
@@ -47,26 +52,34 @@ class SideDrawer extends React.Component {
                 onClick={() => this.props.click(this.handleDropDownAcademics)}
                 className='activeclass'
               >
-                <NavLink to='/courses' exact className='activeclass'>
-                  Courses
+                <NavLink to='/statistics' exact className='activeclass'>
+                  Statistics
                 </NavLink>
               </li>
               <li
                 onClick={() => this.props.click(this.handleDropDownAcademics)}
                 className='activeclass'
               >
-                <NavLink to='/demographics' exact className='activeclass'>
-                  Demographics
+                <NavLink to='/students-placed' exact className='activeclass'>
+                  Students Placed
+                </NavLink>
+              </li>
+              <li
+                onClick={() => this.props.click(this.handleDropDownAcademics)}
+                className='activeclass'
+              >
+                <NavLink to='/our-recruiters' exact className='activeclass'>
+                  Our Recruiters
                 </NavLink>
               </li>
             </ul>
           ) : null}
-          <li onClick={this.props.click}>
+          {/* <li onClick={this.props.click}>
             <NavLink to='/our-recruiters' exact className='activeclass'>
               Our Recruitors
             </NavLink>
-          </li>
-          <li className='activeclass' onClick={this.handleDropdownStatistics}>
+          </li> */}
+          {/* <li className='activeclass' onClick={this.handleDropdownStatistics}>
             Statistics <i className='fa fa-caret-down' />
           </li>
           {this.state.showDropdownStatistics ? (
@@ -96,7 +109,7 @@ class SideDrawer extends React.Component {
                 </NavLink>
               </li>
             </ul>
-          ) : null}
+          ) : null} */}
 
           {/* <li onClick={this.props.click}>
             <NavLink to='/contact-us' exact className='activeclass'>
@@ -108,14 +121,14 @@ class SideDrawer extends React.Component {
               Why Us
             </NavLink>
           </li> */}
-          <li onClick={this.props.click}>
+          {/* <li onClick={this.props.click}>
             <NavLink to='/posts' exact className='activeclass'>
               Posts
             </NavLink>
-          </li>
+          </li> */}
           <li onClick={this.props.click}>
-            <NavLink to='/noticeboard' exact className='activeclass'>
-              Noticeboard
+            <NavLink to='/appliation' exact className='activeclass'>
+              Application
             </NavLink>
           </li>
         </ul>
