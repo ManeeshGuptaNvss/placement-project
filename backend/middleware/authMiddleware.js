@@ -4,7 +4,7 @@ import { promisify } from 'util'
 import asyncHandler from 'express-async-handler'
 import Student from '../models/studentModel.js'
 const protectStudent = asyncHandler(async (req, res, next) => {
-  /*let token
+  let token
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -25,8 +25,9 @@ const protectStudent = asyncHandler(async (req, res, next) => {
   if (!token) {
     res.status(401)
     throw new Error('Not authorized, no token')
-  }*/
+  }
 
+  /*
   // 1) Getting token and check of it's there
   let token
   if (
@@ -65,7 +66,7 @@ const protectStudent = asyncHandler(async (req, res, next) => {
 
   // GRANT ACCESS TO PROTECTED ROUTE
   req.student = currentStudent
-  next()
+  next()*/
 })
 
 const admin = asyncHandler(async (req, res,next) => {

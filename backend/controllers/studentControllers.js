@@ -27,7 +27,7 @@ const getStudentProfile = asyncHandler(async (req, res) => {
 // @route PUT /api/v1/students/profile
 // @access Private
 const updateStudentProfile = asyncHandler(async (req, res) => {
-  console.log(req.student)
+  // console.log(req.student)
   const student = await Student.findById(req.student._id)
   if (student) {
     student.name = req.body.name || student.name

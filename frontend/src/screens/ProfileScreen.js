@@ -3,6 +3,7 @@ import { Button, Form } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import FormContainer from '../components/FormContainer.js'
 import Message from '../components/Message.js'
+import { logout } from '../actions/authActions.js'
 
 import Loader from '../components/Loader.js'
 import {
@@ -53,12 +54,13 @@ const ProfileScreen = ({ location, history }) => {
         passwordConfirm,
       })
     )
+    // dispatch(logout())
   }
   return (
     <FormContainer>
       <h1>Edit Profile </h1>
       {error && <Message variant='danger'>{error}</Message>}
-      {error && <Message variant='danger'>{errorUpdate}</Message>}
+      {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
       {success && <Message variant='success'>{'Profile updated!'}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
