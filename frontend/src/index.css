@@ -3,8 +3,8 @@ main {
 }
 .foot{
 
-  position: fixed;
-    left: 0;
-    bottom: 0;
+  /* position: fixed; */
+    left: 0vh;
+    bottom: 0vh;
     background-color: #e6ecff;
 }

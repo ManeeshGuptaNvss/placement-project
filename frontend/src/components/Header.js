@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap'
+import { Navbar, Nav, NavDropdown, Container,NavLink } from 'react-bootstrap'
 import { logout } from '../actions/authActions.js'
 const Header = () => {
   const dispatch = useDispatch()
@@ -42,13 +42,18 @@ const Header = () => {
                       Profile
                     </NavDropdown.Item>
                   </LinkContainer>
+                  <LinkContainer to='/application'>
+                    <NavDropdown.Item onClick={handler}>
+                      My Application
+                    </NavDropdown.Item>
+                  </LinkContainer>
                   <NavDropdown.Item onClick={logoutHandler}>
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
                 <LinkContainer to='/login'>
-                  <Nav.Link>Login</Nav.Link>
+                  <NavLink>Login</NavLink>
                 </LinkContainer>
               )}
             </Nav>

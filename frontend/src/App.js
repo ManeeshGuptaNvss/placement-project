@@ -13,6 +13,7 @@ import TipsScreen from './screens/TipsScreen.js'
 import TeamScreen from './screens/TeamScreen.js'
 import StatisticsScreen from './screens/StatisticsScreen.js'
 import LoginScreen from './screens/LoginScreen.js'
+import ApplicationScreen from './screens/ApplicationScreen.js'
 import RegisterScreen from './screens/RegisterScreen.js'
 // import Bread from './components/Bread.js'
 const App = ({ name }) => {
@@ -25,6 +26,7 @@ const App = ({ name }) => {
           <Route path='/' component={HomeScreen} exact />
           <Route path='/login' component={LoginScreen}  />
           <Route path='/profile' component={ProfileScreen}  />
+          <Route path='/application' component={ApplicationScreen}  />
           <Route path='/register' component={RegisterScreen} exact />
           <Route path='/posts' component={PostsScreen} exact />
           <Route path='/noticeboard' component={NoticeboardScreen} exact />

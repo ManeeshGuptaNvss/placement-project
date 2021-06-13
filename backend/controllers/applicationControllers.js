@@ -1,9 +1,9 @@
 import AppError from '../utils/appError.js'
-import multer from 'multer'
+
 import asyncHandler from 'express-async-handler'
 import Application from '../models/applicationModel.js'
 import APIFeatures from '../utils/apiFeatures.js'
-
+/*
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null,'backend/uploads')
@@ -26,8 +26,8 @@ const upload = multer({
   storage: multerStorage,
 fileFilter:multerFilter})
 
-
 const uploadResume=upload.single('resume')
+*/
 
 // @desc Create Application
 // @route POST api/v1/applications
@@ -242,5 +242,5 @@ export {
   getReports,
   filterApplications,
   getYearlyStats,
-  uploadResume
+  
 }

@@ -4,10 +4,12 @@ import helmet from 'helmet'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 import xss from 'xss-clean'
+import path from 'path'
 import connectDB from './databaseConnection.js'
 import mongoSanitize from 'express-mongo-sanitize'
 import studentRoutes from './routes/studentRoutes.js'
 import postRoutes from './routes/postRoutes.js'
+import uploadRoutes from './routes/uploadRoutes.js'
 import applicationRoutes from './routes/applicationRoutes.js'
 import { errorHandler, notFound } from './middleware/errorMiddleware.js'
 dotenv.config()
@@ -47,7 +49,11 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/students', studentRoutes)
 app.use('/api/v1/posts', postRoutes)
-app.use('/api/v1/applications',applicationRoutes)
+app.use('/api/v1/applications', applicationRoutes)
+app.use('/api/uploads', uploadRoutes)
+
+const __dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 app.use(notFound)
 app.use(errorHandler)
